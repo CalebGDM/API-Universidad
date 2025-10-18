@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using API1_pweb.Data;
+using API_Universidad.Data;
 using DotNetEnv;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,11 +15,9 @@ builder.Services.AddEndpointsApiExplorer();
 // Configurar conexión a Azure SQL
 var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__AzureDB");
 
-Console.WriteLine("=== DEBUG INFO ===");
-Console.WriteLine($"Connection String encontrado: {connectionString?.Substring(0, Math.Min(50, connectionString?.Length ?? 0))}...");
-Console.WriteLine($"¿Contiene 'caleb'? {connectionString?.Contains("caleb")}");
-Console.WriteLine($"User ID en el string: {(connectionString?.Contains("User ID=") == true ? "encontrado" : "NO encontrado")}");
-Console.WriteLine("==================");
+Console.WriteLine("=== CONNECTION STRING DEBUG ===");
+Console.WriteLine($"Full connection string: {connectionString}");
+Console.WriteLine("================================");
 
 if (string.IsNullOrEmpty(connectionString))
 {

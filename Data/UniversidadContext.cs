@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using API1_pweb.Models;
+using API_Universidad.Models;
 using Microsoft.Identity.Client;
 
-namespace API1_pweb.Data
+namespace API_Universidad.Data
 
 {
     public class UniversidadContext : DbContext

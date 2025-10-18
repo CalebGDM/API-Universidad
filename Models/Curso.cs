@@ -1,4 +1,4 @@
-﻿namespace API1_pweb.Models
+﻿namespace API_Universidad.Models
 {
     public class Curso
     {
