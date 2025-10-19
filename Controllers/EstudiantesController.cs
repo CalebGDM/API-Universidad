@@ -46,6 +46,23 @@ namespace API_Universidad.Controllers
         [HttpPost]
         public async Task<ActionResult<Estudiante>> PostEstudiante(Estudiante estudiante)
         {
+            // Establecer una fecha automatica por defecto
+            if (estudiante.FechaIngreso == default(DateTime))
+            {
+                estudiante.FechaIngreso = DateTime.Now;
+            }
+
+            if (estudiante.FechaIngreso > DateTime.Now)
+            {
+                return BadRequest(new { mensaje = "La fecha de ingreso no puede ser futura" });
+            }
+
+            // Verificar que el numero de cuenta no sea repetido 
+            if (await _context.Estudiantes.AnyAsync(e => e.NumCuenta == estudiante.NumCuenta))
+            {
+                return BadRequest(new { mensaje = "Ya existe un estudiante con esa matrícula" });
+            }
+
             _context.Estudiantes.Add(estudiante);
             await _context.SaveChangesAsync();
 

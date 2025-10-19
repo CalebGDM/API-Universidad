@@ -44,6 +44,8 @@ namespace API_Universidad.Controllers
         [HttpPost]
         public async Task<ActionResult<Curso>> PostCurso(Curso curso)
         {
+
+
             _context.Cursos.Add(curso);
             await _context.SaveChangesAsync();
 

@@ -152,13 +152,7 @@ namespace API_Universidad.Controllers
             _context.Inscripciones.Add(inscripcion);
             await _context.SaveChangesAsync();
 
-            // Recargar con datos relacionados
-            await _context.Entry(inscripcion)
-                .Reference(i => i.Estudiante)
-                .LoadAsync();
-            await _context.Entry(inscripcion)
-                .Reference(i => i.Curso)
-                .LoadAsync();
+           
 
             return CreatedAtAction(nameof(GetInscripcion),
                 new { id = inscripcion.Id },
@@ -212,7 +206,7 @@ namespace API_Universidad.Controllers
             if (inscripcion == null)
                 return NotFound(new { mensaje = "Inscripción no encontrada" });
 
-            if (calificacion < 0 || calificacion > 100)
+            if (calificacion < 0 || calificacion > 10)
                 return BadRequest(new { mensaje = "La calificación debe estar entre 0 y 100" });
 
             inscripcion.Calificacion = calificacion;
@@ -223,7 +217,8 @@ namespace API_Universidad.Controllers
                 mensaje = "Calificación actualizada exitosamente",
                 inscripcionId = inscripcion.Id,
                 nuevaCalificacion = calificacion,
-                aprobado = calificacion >= 70
+                aprobado = calificacion >= 6,
+                ordinario = calificacion < 8
             });
         }
 
@@ -253,7 +248,7 @@ namespace API_Universidad.Controllers
 
         // GET: api/Inscripciones/Estadisticas/Curso/5
         // Estadísticas de un curso (promedio, aprobados, reprobados)
-        [HttpGet("Estadisticas/Curso/{cursoId}")]
+        [HttpGet("estadisticas/curso/{cursoId}")]
         public async Task<ActionResult<object>> GetEstadisticasCurso(int cursoId)
         {
             var curso = await _context.Cursos.FindAsync(cursoId);
@@ -272,8 +267,9 @@ namespace API_Universidad.Controllers
                 CursoNombre = curso.Nombre,
                 TotalEstudiantes = inscripciones.Count,
                 PromedioGeneral = Math.Round(inscripciones.Average(i => i.Calificacion), 2),
-                Aprobados = inscripciones.Count(i => i.Calificacion >= 70),
-                Reprobados = inscripciones.Count(i => i.Calificacion < 70),
+                Aprobados = inscripciones.Count(i => i.Calificacion >= 6),
+                Reprobados = inscripciones.Count(i => i.Calificacion < 6),
+                Ordinarios = inscripciones.Count(i => i.Calificacion >= 6 && i.Calificacion < 8),
                 CalificacionMaxima = inscripciones.Max(i => i.Calificacion),
                 CalificacionMinima = inscripciones.Min(i => i.Calificacion)
             };
@@ -283,7 +279,7 @@ namespace API_Universidad.Controllers
 
         // GET: api/Inscripciones/Estadisticas/Estudiante/5
         // Estadísticas de un estudiante (promedio general, cursos aprobados)
-        [HttpGet("Estadisticas/Estudiante/{estudianteId}")]
+        [HttpGet("estadisticas/estudiante/{estudianteId}")]
         public async Task<ActionResult<object>> GetEstadisticasEstudiante(int estudianteId)
         {
             var estudiante = await _context.Estudiantes.FindAsync(estudianteId);
@@ -303,8 +299,9 @@ namespace API_Universidad.Controllers
                 EstudianteMatricula = estudiante.NumCuenta,
                 TotalCursos = inscripciones.Count,
                 PromedioGeneral = Math.Round(inscripciones.Average(i => i.Calificacion), 2),
-                CursosAprobados = inscripciones.Count(i => i.Calificacion >= 70),
-                CursosReprobados = inscripciones.Count(i => i.Calificacion < 70),
+                CursosAprobados = inscripciones.Count(i => i.Calificacion >= 6),
+                CursosReprobados = inscripciones.Count(i => i.Calificacion < 6),
+                CursosOrdinarios = inscripciones.Count(i => i.Calificacion >= 6 && i.Calificacion < 8),
                 MejorCalificacion = inscripciones.Max(i => i.Calificacion),
                 PeorCalificacion = inscripciones.Min(i => i.Calificacion)
             };
